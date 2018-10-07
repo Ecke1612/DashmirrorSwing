@@ -10,6 +10,7 @@ public class DBStoreObject extends StoreObject implements Serializable {
     private int updateCircle = 5;
     private Point pos = new Point(100,100);
     private double scale = 1.0;
+    private int maxResults = 2;
     private String startCity = "Emden";
     private String stopCity = "Oldenburg(Oldb)";
 
@@ -53,5 +54,13 @@ public class DBStoreObject extends StoreObject implements Serializable {
 
     public void setStopCity(String stopCity) {
         this.stopCity = stopCity;
+    }
+
+    public int getMaxResults() {
+        return maxResults;
+    }
+
+    public void setMaxResults(int maxResults) {
+        this.maxResults = maxResults;
     }
 }

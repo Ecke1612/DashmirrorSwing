@@ -22,7 +22,7 @@ public class DBScreen extends ParentController {
 
     public DBScreen() {
         WIDTH = 280;
-        HEIGHT = 260;
+        HEIGHT = 100;
         name ="db";
         storePath ="data/store/db_";
         long timerCircle = 1000 * 60 * storeObj.getUpdateCircle();
@@ -34,8 +34,8 @@ public class DBScreen extends ParentController {
     public void update() {
        ArrayList<DBDataObject> dbDataObjects = getDBData.getData(storeObj.getStartCity(), storeObj.getStopCity());
        main_vbox.removeAll();
-        for(DBDataObject d : dbDataObjects) {
-            main_vbox.add(createRow(d));
+        for(int i = 0; i < storeObj.getMaxResults(); i++) {
+            main_vbox.add(createRow(dbDataObjects.get(i)));
             main_vbox.add(Box.createRigidArea(new Dimension(0,(int)(10 * storeObj.getScale()))));
         }
         label_title.setText("DB: von " + storeObj.getStartCity() + " nach " + storeObj.getStopCity());
@@ -50,6 +50,7 @@ public class DBScreen extends ParentController {
 
     @Override
     public void initGui() {
+        HEIGHT = 100 + (storeObj.getMaxResults() * 42);
         panel.setSize((int)(WIDTH * storeObj.getScale()), (int) (HEIGHT * storeObj.getScale()));
 
         label_title.setForeground(Color.white);
@@ -173,11 +174,14 @@ public class DBScreen extends ParentController {
         SettingsReturnObject stopcityRow = settings.createInputRow("Stopp Hbf", storeObj.getStopCity());
         SettingsReturnObject sizeRow = settings.createInputRow("Größe", Double.toString(storeObj.getScale()));
         SettingsReturnObject updateRow = settings.createInputRow("update Circle", Integer.toString(storeObj.getUpdateCircle()));
+        SettingsReturnObject maxResulatsRow = settings.createInputRow("Angezeigte Verbindungen (max 4)", Integer.toString(storeObj.getMaxResults()));
         SettingsReturnObject confirmRow = settings.getConfirmButton();
+
         vboxMain.add(startcityRow.getPane());
         vboxMain.add(stopcityRow.getPane());
         vboxMain.add(sizeRow.getPane());
         vboxMain.add(updateRow.getPane());
+        vboxMain.add(maxResulatsRow.getPane());
         vboxMain.add(confirmRow.getPane());
 
         confirmRow.getBtn1().addActionListener(e -> jFrame_Settings.dispose());
@@ -186,12 +190,16 @@ public class DBScreen extends ParentController {
                 storeObj.setStartCity(startcityRow.getTextField().getText());
                 storeObj.setStopCity(stopcityRow.getTextField().getText());
                 storeObj.setUpdateCircle(Integer.parseInt(updateRow.getTextField().getText()));
+                int maxR = Integer.parseInt(maxResulatsRow.getTextField().getText());
+                if(maxR > 4) maxR = 4;
+                storeObj.setMaxResults(maxR);
                 if(Double.parseDouble(sizeRow.getTextField().getText()) != oldscale) {
                     storeObj.setScale(Double.parseDouble(sizeRow.getTextField().getText()));
                     initGui();
                 }
                 save();
                 update();
+                panel.repaint();
                 jFrame_Settings.dispose();
         });
 
