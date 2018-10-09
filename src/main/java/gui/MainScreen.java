@@ -20,6 +20,7 @@ public class MainScreen {
 
     public static final int WIDTH = 1280;
     public static final int HEIGHT = 720;
+    private boolean fullscreen = false;
 
     public int weatherindex = 0;
     public int gcalendarindex = 0;
@@ -31,6 +32,7 @@ public class MainScreen {
     private final JFrame frame = new JFrame("Dashmirror");
     private JPanel topPanel = new JPanel();
     private JPanel centerPanel = new JPanel();
+    private GraphicsDevice vc;
 
     public MainScreen() {
         if(!FileHandler.fileExist("data")) FileHandler.createDir("data");
@@ -40,6 +42,8 @@ public class MainScreen {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        vc = env.getDefaultScreenDevice();
     }
 
     public void loadStoredData() {
@@ -170,15 +174,18 @@ public class MainScreen {
         frame.setVisible(true);
 
         btn_fullscreen.addActionListener(e -> {
-            //frame.setExtendedState( frame.getExtendedState()|JFrame.MAXIMIZED_BOTH );
-            frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-            frame.setUndecorated(true);
-            frame.setResizable(false);
-            Toolkit tk = Toolkit.getDefaultToolkit();
-            int xsize = (int) tk.getScreenSize().getWidth();
-            int ysize = (int) tk.getScreenSize().getHeight();
-            frame.setSize(xsize, ysize);
-            frame.repaint();
+            if(!fullscreen) {
+                try {
+                    frame.setResizable(false);
+                    vc.setFullScreenWindow(frame);
+                    fullscreen = true;
+                }catch(Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+                vc.setFullScreenWindow(null);
+                fullscreen = false;
+            }
         });
 
         centerPanel.addMouseListener(new MouseListener() {
