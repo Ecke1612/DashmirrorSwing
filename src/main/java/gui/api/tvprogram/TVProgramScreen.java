@@ -176,6 +176,7 @@ public class TVProgramScreen extends ParentController {
 
         jFrame_Settings.pack();
         jFrame_Settings.setVisible(true);
+        jFrame_Settings.setAlwaysOnTop(true);
     }
 
     private int getActiveChannelsCount() {

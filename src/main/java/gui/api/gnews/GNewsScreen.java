@@ -159,6 +159,7 @@ public class GNewsScreen extends ParentController {
 
         jFrame_Settings.pack();
         jFrame_Settings.setVisible(true);
+        jFrame_Settings.setAlwaysOnTop(true);
     }
 
     @Override
